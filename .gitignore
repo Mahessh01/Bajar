@@ -1,0 +1,44 @@
+# ========================
+# Python
+# ========================
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# ========================
+# Virtual environment
+# ========================
+venv/
+.venv/
+env/
+ENV/
+
+# ========================
+# Django
+# ========================
+db.sqlite3
+*.log
+
+# Media files (user uploads - NEVER commit)
+media/
+
+# Static files collected by Django
+staticfiles/
+
+# ========================
+# Environment variables
+# ========================
+.env
+
+# ========================
+# IDE / Editors
+# ========================
+.vscode/
+.idea/
+
+# ========================
+# OS files
+# ========================
+.DS_Store
+Thumbs.db

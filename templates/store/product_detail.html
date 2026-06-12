@@ -1,22 +1,27 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block content%}
+{% block content %}
 
 <section class="section-content padding-y bg">
     <div class="container">
 
-        <!-- ============================ COMPONENT 1 ================================= -->
+        <!-- ============================ PRODUCT DETAIL ============================ -->
         <div class="card">
             <div class="row no-gutters">
+
+                <!-- IMAGE -->
                 <aside class="col-md-6">
                     <article class="gallery-wrap">
                         <div class="img-big-wrap">
-                            <a href="#"><img src="{{ single_product.images.url }}"></a>
-                        </div> <!-- img-big-wrap.// -->
-
-                    </article> <!-- gallery-wrap .end// -->
+                            <a href="#">
+                                <img src="{{ single_product.images.url }}" alt="{{ single_product.product_name }}">
+                            </a>
+                        </div>
+                    </article>
                 </aside>
+
+                <!-- DETAILS -->
                 <main class="col-md-6 border-left">
                     <article class="content-body">
 
@@ -28,97 +33,121 @@
 
                         <p>{{ single_product.description }}</p>
 
-
                         <hr>
+
+                        <!-- COLOR OPTIONS -->
                         <div class="row">
                             <div class="item-option-select">
                                 <h6>Choose Color</h6>
+
                                 <div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
+
                                     <label class="btn btn-light">
-                                        <input type="radio" name="radio_color"> Silver
+                                        <input type="radio" name="radio_color" value="silver"> Silver
                                     </label>
+
                                     <label class="btn btn-light">
-                                        <input type="radio" name="radio_color"> Gray
+                                        <input type="radio" name="radio_color" value="gray"> Gray
                                     </label>
+
                                     <label class="btn btn-light active">
-                                        <input type="radio" name="radio_color checked"> Gold
+                                        <input type="radio" name="radio_color" value="gold" checked> Gold
                                     </label>
+
                                     <label class="btn btn-light">
-                                        <input type="radio" name="radio_color"> Black
+                                        <input type="radio" name="radio_color" value="black"> Black
                                     </label>
+
                                 </div>
                             </div>
-                        </div> <!-- row.// -->
+                        </div>
+
+                        <!-- SIZE OPTIONS -->
                         <div class="row">
                             <div class="item-option-select">
                                 <h6>Select Size</h6>
+
                                 <div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
+
                                     <label class="btn btn-light">
-                                        <input type="radio" name="radio_color"> S
+                                        <input type="radio" name="radio_size" value="S"> S
                                     </label>
+
                                     <label class="btn btn-light active">
-                                        <input type="radio" name="radio_color" checked> M
+                                        <input type="radio" name="radio_size" value="M" checked> M
                                     </label>
+
                                     <label class="btn btn-light">
-                                        <input type="radio" name="radio_color"> L
+                                        <input type="radio" name="radio_size" value="L"> L
                                     </label>
+
                                     <label class="btn btn-light">
-                                        <input type="radio" name="radio_color"> XL
+                                        <input type="radio" name="radio_size" value="XL"> XL
                                     </label>
+
                                 </div>
                             </div>
-                        </div> <!-- row.// -->
-                        <hr>
-                        {% if single_product.stock <= 0 %} <h5>Out Of Stock</h5>
-                            {% else %}
-                            <a href="{% url 'add_cart' single_product.id %}" class="btn  btn-primary"> <span class="text">Add to
-                                    cart</span> <i class="fas fa-shopping-cart"></i> </a>
-                            {% endif %}
-                    </article> <!-- product-info-aside .// -->
-                </main> <!-- col.// -->
-            </div> <!-- row.// -->
-        </div> <!-- card.// -->
-        <!-- ============================ COMPONENT 1 END .// ================================= -->
+                        </div>
 
+                        <hr>
+
+                        <!-- STOCK + CART -->
+                        {% if single_product.stock <= 0 %} <h5 class="text-danger">Out Of Stock</h5>
+
+                            {% else %}
+                            {% if in_cart %}
+                            <a href="#" class="btn btn-success">
+                                Added to cart <i class="fas fa-check"></i>
+                            </a>
+                            <a href="{% url 'cart' %}" class="btn btn-primary">
+                                View Cart <i class="fas fa-eye"></i>
+                            </a>
+                            {% else %}
+                            <a href="{% url 'add_cart' single_product.id %}" class="btn btn-primary">
+                                Add to cart <i class="fas fa-shopping-cart"></i>
+                            </a>
+                            {% endif %}
+                            {% endif %}
+
+                    </article>
+                </main>
+
+            </div>
+        </div>
+
+        <!-- ============================ REVIEWS ============================ -->
         <br>
 
         <div class="row">
             <div class="col-md-9">
 
                 <header class="section-heading">
-                    <h3>Customer Reviews </h3>
-
+                    <h3>Customer Reviews</h3>
                 </header>
 
                 <article class="box mb-3">
                     <div class="icontext w-100">
-                        <img src="./images/avatars/avatar1.jpg" class="img-xs icon rounded-circle">
-                        <div class="text">
-                            <span class="date text-muted float-md-right">24.04.2020 </span>
-                            <h6 class="mb-1">Mike John </h6>
+                        <img src="{% static 'images/avatars/avatar1.jpg' %}" class="img-xs icon rounded-circle"
+                            alt="avatar">
 
+                        <div class="text">
+                            <span class="date text-muted float-md-right">24.04.2020</span>
+                            <h6 class="mb-1">Mike John</h6>
                         </div>
-                    </div> <!-- icontext.// -->
+                    </div>
+
                     <div class="mt-3">
                         <p>
-                            Dummy comment Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                            quis nostrud exercitation ullamco laboris nisi ut aliquip
+                            Dummy comment Lorem ipsum dolor sit amet, consectetur adipisicing elit,
+                            sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                         </p>
                     </div>
                 </article>
 
+            </div>
+        </div>
 
-
-            </div> <!-- col.// -->
-        </div> <!-- row.// -->
-
-
-    </div> <!-- container .//  -->
+    </div>
 </section>
 
 {% endblock %}
-
-
-
-<!-- ========================= SECTION CONTENT END// ========================= -->

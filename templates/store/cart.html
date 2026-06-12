@@ -4,9 +4,18 @@
 {% block content %}
 
 <section class="section-content padding-y bg">
-    <div class="container">
+    <class="container">
 
         <!-- ============================ COMPONENT 1 ================================= -->
+        {% if not cart_items %}
+        <div style="text-align:center; padding:100px 0;">
+            <h2>Your shopping cart is empty!</h2>
+            <br>
+            <a href="{% url 'store' %}" class="btn btn-primary">
+                Continue Shopping
+            </a>
+        </div>
+        {% else %}
 
         <div class="row">
             <aside class="col-lg-9">
@@ -28,7 +37,7 @@
                                         <div class="aside"><img src="{{ cart_item.product.images.url }}" class="img-sm">
                                         </div>
                                         <figcaption class="info">
-                                            <a href="#" class="title text-dark">{{ cart_item.product.product_name }}</a>
+                                            <a href="{{ cart_item.product.get_url }}" class="title text-dark">{{ cart_item.product.product_name }}</a>
                                             <p class="text-muted small">Brand: 25 Mpx <br> Size: Canon</p>
                                         </figcaption>
                                     </figure>
@@ -73,7 +82,7 @@
                     <div class="card-body">
                         <dl class="dlist-align">
                             <dt>Total price:</dt>
-                            <dd class="text-right">$69.97</dd>
+                            <dd class="text-right">${{ total }}</dd>
                         </dl>
                         <dl class="dlist-align">
                             <dt>Tax:</dt>
@@ -88,7 +97,7 @@
                             <img src="{% static './images/misc/payments.png' %}" height="26">
                         </p>
                         <a href="./place-order.html" class="btn btn-primary btn-block"> Checkout </a>
-                        <a href="./store.html" class="btn btn-light btn-block">Continue Shopping</a>
+                        <a href="{% url 'store' %}" class="btn btn-light btn-block">Continue Shopping</a>
                     </div> <!-- card-body.// -->
                 </div> <!-- card.// -->
 
@@ -96,8 +105,9 @@
 
 
         </div> <!-- row.// -->
+        {% endif %}
         <!-- ============================ COMPONENT 1 END .// ================================= -->
 
-    </div> <!-- container .//  -->
+        </div> <!-- container .//  -->
 </section>
 {% endblock %}

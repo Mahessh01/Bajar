@@ -1,63 +1,79 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.core.exceptions import ObjectDoesNotExist
-from store.models import Product
+from store.models import Product, Variation
 from .models import Cart, CartItem
 
 
-# Create your views here.
 def _cart_id(request):
     cart = request.session.session_key
-
     if not cart:
         cart = request.session.create()
-
     return cart
 
 
 def add_cart(request, product_id):
-    color= request.GET('color')
-    size= request.GET('size')
+
     product = Product.objects.get(id=product_id)
+    product_variation = []
 
-    try:
-        cart = Cart.objects.get(cart_id=_cart_id(request))
+    if request.method == 'POST':
+        for key in request.POST:
+            if key == 'csrfmiddlewaretoken':
+                continue
 
-    except Cart.DoesNotExist:
-        cart = Cart.objects.create(
-            cart_id=_cart_id(request)
-        )
+            value = request.POST[key]
 
-    cart.save()
+            try:
+                variation = Variation.objects.get(
+                    product=product,
+                    variation_category__iexact=key,
+                    variation_value__iexact=value
+                )
+                product_variation.append(variation)
+            except Variation.DoesNotExist:
+                pass
 
-    try:
-        cart_item = CartItem.objects.get(
-            product=product,
-            cart=cart
-        )
+    cart, _ = Cart.objects.get_or_create(cart_id=_cart_id(request))
 
-        cart_item.quantity += 1
-        cart_item.save()
+    cart_items = CartItem.objects.filter(product=product, cart=cart)
 
-    except CartItem.DoesNotExist:
+    if cart_items.exists():
+
+        for item in cart_items:
+            existing_variations = list(item.variations.all())
+
+            if existing_variations == product_variation:
+                item.quantity += 1
+                item.save()
+                break
+        else:
+            cart_item = CartItem.objects.create(
+                product=product,
+                quantity=1,
+                cart=cart
+            )
+            if product_variation:
+                cart_item.variations.add(*product_variation)
+
+    else:
         cart_item = CartItem.objects.create(
             product=product,
             quantity=1,
-            cart=cart,
+            cart=cart
         )
-
-        cart_item.save()
+        if product_variation:
+            cart_item.variations.add(*product_variation)
 
     return redirect('cart')
 
+
 def remove_cart(request, product_id):
+
     product = Product.objects.get(id=product_id)
 
     try:
         cart = Cart.objects.get(cart_id=_cart_id(request))
-        cart_item = CartItem.objects.get(
-            product=product,
-            cart=cart
-        )
+        cart_item = CartItem.objects.filter(product=product, cart=cart).first()
 
         if cart_item.quantity > 1:
             cart_item.quantity -= 1
@@ -69,35 +85,34 @@ def remove_cart(request, product_id):
         pass
 
     return redirect('cart')
-        
 
 
-def cart(request, total=0, quantity=0, cart_items=None):
+def cart(request):
+
+    total = 0
+    quantity = 0
     cart_items = []
 
     try:
         cart = Cart.objects.get(cart_id=_cart_id(request))
-        cart_items = CartItem.objects.filter(
-            cart=cart,
-            is_active=True
-        )
 
-        for cart_item in cart_items:
-            total += (cart_item.product.price * cart_item.quantity)
-            quantity += cart_item.quantity
-        
-        tax= (2* total)/100
-        grand_total= total + tax
+        cart_items = CartItem.objects.filter(cart=cart, is_active=True)
+
+        for item in cart_items:
+            total += item.product.price * item.quantity
+            quantity += item.quantity
+
+        tax = (2 * total) / 100
+        grand_total = total + tax
 
     except ObjectDoesNotExist:
-        pass
+        tax = 0
+        grand_total = 0
 
-    context = {
+    return render(request, 'store/cart.html', {
+        'cart_items': cart_items,
         'total': total,
         'quantity': quantity,
-        'cart_items': cart_items,
         'tax': tax,
         'grand_total': grand_total
-    }
-
-    return render(request, 'store/cart.html', context)
+    })

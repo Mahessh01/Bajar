@@ -34,12 +34,32 @@
         });
         // jquery end
     </script>
-
 </head>
+
+</div>
+{% if messages %}
+<div id="msg-container" style="position:fixed; top:20px; right:20px; z-index:9999;">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}" style="padding:10px; margin-bottom:10px;">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+    setTimeout(function () {
+        let msgs = document.getElementById("msg-container");
+        if (msgs) {
+            msgs.style.display = "none";
+        }
+    }, 3000);
+</script>
+{% endif %}
+
 
 <body>
     {% include 'includes/navbar.html' %}
-    
+
 
     {% block content %}
     {% endblock %}

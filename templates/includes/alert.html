@@ -1,0 +1,30 @@
+{% if messages %}
+
+<div class="container mt-2">
+
+    {% for message in messages %}
+
+        {% if message.tags == "error" %}
+
+            <!-- ERROR → normal Bootstrap alert -->
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="close" data-dismiss="alert">
+                    <span>&times;</span>
+                </button>
+            </div>
+
+        {% else %}
+
+            <!-- SUCCESS → JS ALERT -->
+            <script>
+                alert("{{ message }}");
+            </script>
+
+        {% endif %}
+
+    {% endfor %}
+
+</div>
+
+{% endif %}

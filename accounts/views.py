@@ -15,8 +15,6 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
-from carts.models import Cart, CartItem
-from carts.views import _cart_id
 
 
 # =========================
@@ -99,22 +97,10 @@ def login(request):
         user = authenticate(request, username=email, password=password)
 
         if user is not None:
-            try:
-                cart= Cart.objects.get(cart_id=_cart_id(request))
-                is_cart_item_exists= CartItem.objects.filter(product=product, cart=cart).exists()
-                if is_cart_item_exists:
-                    cart_item= CartItem.objects.filter(cart=cart)
-                    
-                    for item in cart_item:
-                        item.user= user
-                        item.save()
-                
-                
-            except:
-                pass
             auth_login(request, user)
             messages.success(request, "Logged in successfully!")
             return redirect('store')
+
         else:
             messages.error(request, "Invalid credentials")
             return redirect('login')
@@ -177,7 +163,7 @@ def forgotPassword(request):
                 {
                     'user': user,
                     'domain': current_site.domain,
-                    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                    'uidb64': urlsafe_base64_encode(force_bytes(user.pk)),
                     'token': default_token_generator.make_token(user),
                 }
             )
@@ -208,7 +194,7 @@ def resetpassword_validate(request, uidb64, token):
     if user is not None and default_token_generator.check_token(user, token):
         request.session['uid'] = uid
         messages.success(request, 'Reset your password below')
-        return redirect('resetPassword')
+        return redirect('login')
     else:
         messages.error(request, 'Invalid or expired link')
         return redirect('login')

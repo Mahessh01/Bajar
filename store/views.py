@@ -2,7 +2,6 @@ from django.shortcuts import get_object_or_404, render
 from carts.models import CartItem
 from category.models import Category
 from .models import Product
-from carts.views import _cart_id
 from django.db.models import Q
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 
@@ -41,7 +40,14 @@ def store(request, category_slug=None):
 def product_detail(request, category_slug, product_slug):
     try: 
         single_product = Product.objects.get(category__slug = category_slug,slug= product_slug)
-        in_cart= CartItem.objects.filter(cart__cart_id=_cart_id(request),product = single_product).exists()
+        if request.user.is_authenticated:
+            in_cart = CartItem.objects.filter(
+            user=request.user,
+            product=single_product,
+            is_active=True
+        ).exists()
+        else:
+            in_cart = False
     except Exception as e:
         raise e
     context= { 
@@ -59,6 +65,6 @@ def search(request):
 
     context = {
         'products': products,
-        'product_count': products.count
+        'product_count': products.count()
     }
     return render(request, 'store/store.html',context)

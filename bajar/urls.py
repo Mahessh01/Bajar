@@ -28,7 +28,7 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     
     #order app paths
-    path('orders/', include('orderss.urls')),
+    path('orders/', include('orders.urls')),
 
 ]
 if settings.DEBUG:

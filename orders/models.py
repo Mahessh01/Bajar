@@ -43,7 +43,7 @@ class Order(models.Model):
     email = models.EmailField(max_length=50)
     address = models.CharField(max_length=100, blank=True)
     order_note = models.CharField(max_length=200, blank=True)
-
+    order_total = models.DecimalField(max_digits=10,decimal_places=2,default=0)
     # FIX: float replaced with decimal
     tax = models.DecimalField(max_digits=10, decimal_places=2)
 

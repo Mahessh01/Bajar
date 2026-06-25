@@ -7,7 +7,7 @@
 <section class="section-content padding-y bg">
     <div class="container">
 
-        <form action="" method="POST">
+        <form action="{% url 'place_order' %}" method="POST">
             {% csrf_token %}
 
             <div class="row">
@@ -18,6 +18,8 @@
                         <div class="card-body">
 
                             <h4 class="card-title mb-4">Billing Address</h4>
+
+
 
                             <div class="form-row">
                                 <div class="col form-group">
@@ -97,8 +99,8 @@
 
                                                     <p class="text-muted small">
                                                         {% for item in cart_item.variations.all %}
-                                                            {{ item.variation_category|capfirst }} :
-                                                            {{ item.variation_value|capfirst }}<br>
+                                                        {{ item.variation_category|capfirst }} :
+                                                        {{ item.variation_value|capfirst }}<br>
                                                         {% endfor %}
                                                     </p>
                                                 </figcaption>

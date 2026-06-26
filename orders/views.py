@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 
 from django.shortcuts import redirect, render
 
@@ -27,26 +27,24 @@ def place_order(request, total=0,quantity=0):
         if form.is_valid():
             #storing billing info
             data= Order()
-            data.first_name = form.cleaned_data('first_name')
-            data.first_name = form.cleaned_data('last_name')
-            data.first_name = form.cleaned_data('email')
-            data.first_name = form.cleaned_data('phone')
-            data.first_name = form.cleaned_data('address')
-            data.first_name = form.cleaned_data('order_note')
+            data.first_name = form.cleaned_data['first_name']
+            data.last_name = form.cleaned_data['last_name']
+            data.email = form.cleaned_data['email']
+            data.phone = form.cleaned_data['phone']
+            data.address = form.cleaned_data['address']
+            data.order_note = form.cleaned_data['order_note']
             data.order_total= grand_total
             data.tax= tax
-            data.ip= request.Meta.get('REMOTE_ADDR')
+            data.ip= request.META.get('REMOTE_ADDR')
+            data.user = current_user
             data.save()
-            
-            #generate order number
-            yr= int(datetime.date.today().strftime('%Y'))
-            dt= int(datetime.date.today().strftime('%d'))
-            mt= int(datetime.date.today().strftime('%m'))
-            d= datetime.date(yr, mt, dt)
-            current_date= d.strftime('%Y%m%d') #20210625
-            order_number= current_date + str(data.id)
-            data.order_number= order_number
-            data.save()
+
+            # Generate order number
+            current_date = date.today().strftime('%Y%m%d')
+            data.order_number = f"{current_date}{data.id}"
+
+            # Save only the order number
+            data.save(update_fields=['order_number'])
             return redirect('checkout')
         else:
             return redirect('checkout')

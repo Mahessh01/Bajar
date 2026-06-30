@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+    .payment-container {
+        text-align: center;
+        margin-top: 80px;
+    }
+
+    .payment-container img {
+        width: 500px;
+        border: 3px solid black;
+        border-radius: 10px;
+    }
+</style>
+
+<div class="payment-container">
+    <h2>Make Your Payment Here</h2>
+
+    <img src="https://imgs.search.brave.com/cfnwX_XU0dZfRmZearOZ73OuGP2MMeMQASD6VvLJSuw/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzMyLzM4/LzVmLzMyMzg1ZjFl/MDRhNmZjMjVlNzkz/YjU5Njc1NDU2MDMw/LmpwZw"
+         alt="QR Code">
+</div>
+
+{% endblock %}

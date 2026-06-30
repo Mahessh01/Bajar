@@ -16,6 +16,9 @@ from django.utils.encoding import force_bytes, force_str
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
 
+from carts.models import CartItem
+from orders.models import Order
+
 
 # =========================
 # REGISTER
@@ -140,7 +143,17 @@ def activate(request, uidb64, token):
     
 @login_required(login_url='login')
 def dashboard(request):
-    return render(request, 'accounts/dashboard.html')
+    cart_items = CartItem.objects.filter(user=request.user)
+
+    total_quantity = 0
+    for item in cart_items:
+        total_quantity += item.quantity
+
+    context = {
+        'total_quantity': total_quantity,
+    }
+
+    return render(request, 'accounts/dashboard.html', context)
 
 def forgotPassword(request):
     if request.method == 'POST':

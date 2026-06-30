@@ -17,7 +17,7 @@ ENV/
 # ========================
 # Django
 # ========================
-db.sqlite3
+
 *.log
 
 # Media files (user uploads - NEVER commit)
